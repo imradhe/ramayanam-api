@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transliteration Example</title>
+    <style>
+        body {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <script src="node_modules/@indic-transliteration/sanscript/sanscript.js"></script>
+<script>
+  var output = Sanscript.t(`तपस्स्वाध्यायनिरतं तपस्वी वाग्विदां वरम् ।
+
+नारदं परिपप्रच्छ वाल्मीकिर्मुनिपुङ्गवम् ।।1.1.1।। 
+
+`, 'devanagari','bengali');
+  console.log(output)
+</script>
+</body>

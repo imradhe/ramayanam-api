@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@indic-transliteration/sanscript": "^1.2.8"
+  }
+}

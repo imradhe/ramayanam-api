@@ -1,0 +1,51 @@
+<style>
+    body {
+        white-space: pre-wrap;
+    }
+</style>
+<body>
+<div id="slokaContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<script>
+    const kanda = new URLSearchParams(window.location.search).get("kanda");
+    const sarga = new URLSearchParams(window.location.search).get("sarga");
+    const slokaNumber = new URLSearchParams(window.location.search).get("sloka");
+
+    const csvFile = "../slokas/slokas.csv";
+
+    Papa.parse(csvFile, {
+        download: true,
+        header: false,
+        complete: function (results) {
+            const rows = results.data;
+            let requestedSloka = null;
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (row[2] === kanda + "." + sarga + "." + slokaNumber) {
+                    requestedSloka = row;
+                    break;
+                }
+            }
+
+            const slokaContainer = document.getElementById("slokaContainer");
+            if (requestedSloka !== null) {
+                
+                slokaContainer.innerHTML += "<p class='id'>ID: " + requestedSloka[2] + "</p>";
+                slokaContainer.innerHTML += "<p class='script'>Script: " + requestedSloka[3] + "</p>";
+                slokaContainer.innerHTML += "<p class='text'>" + requestedSloka[7] + "</p>";
+                slokaContainer.innerHTML += "<p class='description'>" + requestedSloka[8] + "</p>";
+                slokaContainer.innerHTML += "<p class='meaning'>Meaning: " + requestedSloka[9] + "</p>";
+                slokaContainer.innerHTML += "<p class='translation'>Translation: " + requestedSloka[10] + "</p>";
+                slokaContainer.innerHTML += "<p class='source'>Source: <a href='" + requestedSloka[11] + "'>" + requestedSloka[11] + "</a></p>";
+                if(requestedSloka[0] == "TRUE") slokaContainer.innerHTML += "<p class='verified-by'>Verified By: " + requestedSloka[1] + "</p>";
+            } else {
+                slokaContainer.innerHTML = "<p class='not-found'>Sloka not found.</p>";
+            }
+        },
+        error: function (error) {
+            console.error("Error parsing CSV file:", error);
+        }
+    });
+</script>
+</body>

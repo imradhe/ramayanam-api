@@ -11,14 +11,15 @@
     </style>
 </head>
 <body>
-
+<span></span>
     <script src="node_modules/@indic-transliteration/sanscript/sanscript.js"></script>
 <script>
   var output = Sanscript.t(`तपस्स्वाध्यायनिरतं तपस्वी वाग्विदां वरम् ।
 
 नारदं परिपप्रच्छ वाल्मीकिर्मुनिपुङ्गवम् ।।1.1.1।। 
 
-`, 'devanagari','bengali');
+`, 'devanagari','telugu');
+document.querySelector('span').innerHTML = output
   alert(output)
 </script>
 </body>

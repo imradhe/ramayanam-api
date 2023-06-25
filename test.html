@@ -12,14 +12,30 @@
 </head>
 <body>
 <span></span>
-    <script src="transliteration.js"></script>
+    <script src="sanscript/sanscript.js"></script>
 <script>
-  var output = Sanscript.t(`तपस्स्वाध्यायनिरतं तपस्वी वाग्विदां वरम् ।
+  input = `तपस्स्वाध्यायनिरतं तपस्वी वाग्विदां वरम् ।
 
 नारदं परिपप्रच्छ वाल्मीकिर्मुनिपुङ्गवम् ।।1.1.1।। 
 
-`, 'devanagari','telugu');
-document.querySelector('span').innerHTML = output
-  alert(output)
+`
+  output = Sanscript.t(input, 'devanagari','telugu')
+  document.querySelector('span').innerHTML += output+`<br>telugu<hr>`
+  output = Sanscript.t(input, 'devanagari','hk')
+  document.querySelector('span').innerHTML += output+`<br>hk<hr>`
+  output = Sanscript.t(input, 'devanagari','itrans')
+  document.querySelector('span').innerHTML += output+`<br>itrans<hr>`
+  output = Sanscript.t(input, 'devanagari','iso')
+  document.querySelector('span').innerHTML += output+`<br>iso<hr>`
+  output = Sanscript.t(input, 'devanagari','tamil')
+  document.querySelector('span').innerHTML += output+`<br>tamil<hr>`
+  output = Sanscript.t(input, 'devanagari','kannada')
+  document.querySelector('span').innerHTML += output+`<br>kannada<hr>`
+  output = Sanscript.t(input, 'devanagari','malayalam')
+  document.querySelector('span').innerHTML += output+`<br>malayalam<hr>`
+  output = Sanscript.t(input, 'devanagari','bengali')
+  document.querySelector('span').innerHTML += output+`<br>bengali<hr>`
+  output = Sanscript.t(input, 'devanagari','gujarati')
+  document.querySelector('span').innerHTML += output+`gujarati<hr>`
 </script>
 </body>

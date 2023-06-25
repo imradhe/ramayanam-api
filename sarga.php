@@ -9,7 +9,7 @@ error_reporting(0);
 $kanda = $_GET["kanda"];
 $sarga = $_GET["sarga"];
 
-$csvFile = fopen('test/slokas.csv', 'r');
+$csvFile = fopen('slokas/slokas.csv', 'r');
 $slokas = array();
 
 // Find all slokas of the specified sarga

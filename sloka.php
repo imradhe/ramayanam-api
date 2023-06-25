@@ -10,7 +10,7 @@ $kanda = $_GET["kanda"];
 $sarga = $_GET["sarga"];
 $slokaNumber = $_GET["sloka"];
 
-$csvFile = fopen('test/slokas.csv', 'r');
+$csvFile = fopen('slokas/slokas.csv', 'r');
 // Find the requested sloka
 $requestedSloka = null;
 while (($row = fgetcsv($csvFile)) !== false) {

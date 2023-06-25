@@ -1,51 +1,118 @@
-<style>
-    body {
-        white-space: pre-wrap;
-    }
-</style>
-<body>
-<div id="slokaContainer"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-<script>
-    const kanda = new URLSearchParams(window.location.search).get("kanda");
-    const sarga = new URLSearchParams(window.location.search).get("sarga");
-    const slokaNumber = new URLSearchParams(window.location.search).get("sloka");
-
-    const csvFile = "../slokas/slokas.csv";
-
-    Papa.parse(csvFile, {
-        download: true,
-        header: false,
-        complete: function (results) {
-            const rows = results.data;
-            let requestedSloka = null;
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                if (row[2] === kanda + "." + sarga + "." + slokaNumber) {
-                    requestedSloka = row;
-                    break;
-                }
-            }
-
-            const slokaContainer = document.getElementById("slokaContainer");
-            if (requestedSloka !== null) {
-                
-                slokaContainer.innerHTML += "<p class='id'>ID: " + requestedSloka[2] + "</p>";
-                slokaContainer.innerHTML += "<p class='script'>Script: " + requestedSloka[3] + "</p>";
-                slokaContainer.innerHTML += "<p class='text'>" + requestedSloka[7] + "</p>";
-                slokaContainer.innerHTML += "<p class='description'>" + requestedSloka[8] + "</p>";
-                slokaContainer.innerHTML += "<p class='meaning'>Meaning: " + requestedSloka[9] + "</p>";
-                slokaContainer.innerHTML += "<p class='translation'>Translation: " + requestedSloka[10] + "</p>";
-                slokaContainer.innerHTML += "<p class='source'>Source: <a href='" + requestedSloka[11] + "'>" + requestedSloka[11] + "</a></p>";
-                if(requestedSloka[0] == "TRUE") slokaContainer.innerHTML += "<p class='verified-by'>Verified By: " + requestedSloka[1] + "</p>";
-            } else {
-                slokaContainer.innerHTML = "<p class='not-found'>Sloka not found.</p>";
-            }
-        },
-        error: function (error) {
-            console.error("Error parsing CSV file:", error);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            white-space: pre-wrap;
         }
-    });
-</script>
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <label for="kanda">Kanda:</label>
+    <select id="kanda"></select>
+    <label for="sarga">Sarga:</label>
+    <select id="sarga"></select>
+    <label for="sloka">Sloka:</label>
+    <select id="sloka"></select>
+    <button onclick="navigateToSelectedPage()">Go</button>
+    <div id="slokaContainer"></div>
+
+    <script>
+        function navigateToSelectedPage() {
+            const kandaValue = document.getElementById("kanda").value;
+            const sargaValue = document.getElementById("sarga").value;
+            const slokaValue = document.getElementById("sloka").value;
+            window.location.href = `?kanda=${kandaValue}&sarga=${sargaValue}&sloka=${slokaValue}`;
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const kanda = urlParams.get("kanda") || "1";
+            const sarga = urlParams.get("sarga") || "1";
+            const sloka = urlParams.get("sloka") || "1";
+
+            const kandaField = document.getElementById("kanda");
+            const sargaField = document.getElementById("sarga");
+            const slokaField = document.getElementById("sloka");
+
+            const statsFile = "../test.json";
+
+            fetch(statsFile)
+                .then(response => response.json())
+                .then(stats => {
+                    const kandas = 6;
+                    const sargas = stats[kanda].length;
+                    const slokas = stats[kanda][sarga - 1][sarga];
+
+                    const kandaOptions = ["Balakanda", "Ayodhyakanda", "Aranyakanda", "Kishkindakanda", "Sundarakanda", "Yuddhakanda"];
+                    populateSelectOptions(kandaField, kandas, kandaOptions);
+                    populateSelectOptions(sargaField, sargas);
+                    populateSelectOptions(slokaField, slokas);
+
+                    kandaField.value = kanda;
+                    sargaField.value = sarga;
+                    slokaField.value = sloka;
+
+                    // Retrieve sloka data based on selected options
+                    retrieveSlokaData(kanda, sarga, sloka);
+                })
+                .catch(error => console.error("Error loading stats:", error));
+        };
+
+        function populateSelectOptions(selectElement, count, options = []) {
+            for (let i = 1; i <= count; i++) {
+                const optionElement = document.createElement('option');
+                optionElement.value = i;
+                optionElement.textContent = options[i - 1] || i;
+                selectElement.appendChild(optionElement);
+            }
+        }
+
+        function retrieveSlokaData(kanda, sarga, sloka) {
+            const csvFile = "../slokas/slokas.csv";
+
+            Papa.parse(csvFile, {
+                download: true,
+                header: false,
+                complete: function (results) {
+                    const rows = results.data;
+                    let requestedSloka = null;
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (row[2] === `${kanda}.${sarga}.${sloka}`) {
+                            requestedSloka = row;
+                            break;
+                        }
+                    }
+
+                    const slokaContainer = document.getElementById("slokaContainer");
+                    slokaContainer.innerHTML = "";
+
+                    if (requestedSloka !== null) {
+                        //https://www.valmiki.iitk.ac.in/sites/default/files/audio/1-2-29.mp3
+                        slokaContainer.innerHTML += `<audio controls="" controlslist="nodownload"><source src="https://www.valmiki.iitk.ac.in/sites/default/files/audio/${kanda}-${sarga}-${sloka}.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio>`
+                        slokaContainer.innerHTML += "<p class='id'>ID: " + requestedSloka[2] + "</p>";
+                        slokaContainer.innerHTML += "<p class='script'>Script: " + requestedSloka[3] + "</p>";
+                        slokaContainer.innerHTML += "<p class='text'>" + requestedSloka[7] + "</p>";
+                        slokaContainer.innerHTML += "<p class='description'>" + requestedSloka[8] + "</p>";
+                        slokaContainer.innerHTML += "<p class='meaning'>Meaning: " + requestedSloka[9] + "</p>";
+                        slokaContainer.innerHTML += "<p class='translation'>Translation: " + requestedSloka[10] + "</p>";
+                        slokaContainer.innerHTML += "<p class='source'>Source: <a href='" + requestedSloka[11] + "'>" + requestedSloka[11] + "</a></p>";
+                        if (requestedSloka[0] === "TRUE") {
+                            slokaContainer.innerHTML += "<p class='verified-by'>Verified By: " + requestedSloka[1] + "</p>";
+                        }
+                    } else {
+                        slokaContainer.innerHTML = "<p class='not-found'>Sloka not found.</p>";
+                    }
+                },
+                error: function (error) {
+                    console.error("Error parsing CSV file:", error);
+                }
+            });
+        }
+    </script>
 </body>
+</html>

@@ -30,31 +30,34 @@ def getCount(kanda, sarga):
     else:
         largest_number = None
 
-    return [kanda, sarga, largest_number]
+    return largest_number
 
 # Define the list of kandas and their respective sargas
 kandas = [
-    {"name": "Balakanda", "id": 1, "sargas": 77},
-    {"name": "Ayodhyakanda", "id": 2, "sargas": 119},
-    {"name": "Aranyakanda", "id": 3, "sargas": 75},
-    {"name": "Kishkindakanda", "id": 4, "sargas": 67},
-    {"name": "Sundarakanda", "id": 5, "sargas": 68},
-    {"name": "Yuddhakanda", "id": 6, "sargas": 131}
+    {"name": "balakanda", "id": 1, "sargas": 77},
+    {"name": "ayodhyakanda", "id": 2, "sargas": 119},
+    {"name": "aranyakanda", "id": 3, "sargas": 75},
+    {"name": "kishkindakanda", "id": 4, "sargas": 67},
+    {"name": "sundarakanda", "id": 5, "sargas": 68},
+    {"name": "yuddhakanda", "id": 6, "sargas": 131}
 ]
 
-stats = []
+stats = {}
 
 # Iterate over each kanda and sarga
 for kanda in kandas:
     kanda_id = kanda["id"]
     sargas = kanda["sargas"]
+    kanda_stats = []
 
     for sarga in tqdm(range(1, sargas + 1), desc=kanda["name"]):
-        result = getCount(kanda_id, sarga)
-        stats.append(result)
+        sloka_count = getCount(kanda_id, sarga)
+        kanda_stats.append({sarga: sloka_count})
+
+    stats[kanda_id] = kanda_stats
 
 # Save the stats as JSON
-with open('stats.json', 'w') as f:
+with open('test.json', 'w') as f:
     json.dump(stats, f)
 
 print("Stats saved as stats.json")
